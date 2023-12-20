@@ -30,3 +30,4 @@ E:\Programming\VSCode\e-store\API\obj\Debug\net8.0\refint\API.dll
 E:\Programming\VSCode\e-store\API\obj\Debug\net8.0\API.pdb
 E:\Programming\VSCode\e-store\API\obj\Debug\net8.0\API.genruntimeconfig.cache
 E:\Programming\VSCode\e-store\API\obj\Debug\net8.0\ref\API.dll
+E:\Programming\VSCode\e-store\API\obj\Debug\net8.0\API.sourcelink.json
