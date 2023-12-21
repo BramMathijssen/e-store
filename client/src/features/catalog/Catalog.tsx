@@ -1,3 +1,4 @@
+import { Avatar, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import { Product } from "../../app/models/product";
 
 interface CatalogProps {
@@ -6,13 +7,18 @@ interface CatalogProps {
 
 const Catalog = ({ products }: CatalogProps) => {
     return (
-        <ul>
+        <List>
             {products.map((product) => (
-                <li key={product.id}>
-                    {product.name} {product.price}
-                </li>
+                <ListItem key={product.id}>
+                    <ListItemAvatar>
+                        <Avatar src={product.pictureUrl}></Avatar>
+                    </ListItemAvatar>
+                    <ListItemText>
+                        {product.name} - {product.price}
+                    </ListItemText>
+                </ListItem>
             ))}
-        </ul>
+        </List>
     );
 };
 
