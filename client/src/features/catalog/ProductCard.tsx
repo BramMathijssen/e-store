@@ -1,5 +1,4 @@
-import { ListItem, ListItemAvatar, Avatar, ListItemText, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
-import React from "react";
+import {  Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
 import { Product } from "../../app/models/product";
 
 interface ProductCardProps {
