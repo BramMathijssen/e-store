@@ -11,7 +11,7 @@ const responseBody = (response: AxiosResponse) => response.data;
 
 axios.interceptors.response.use(
   async (response) => {
-    await sleep();
+    // await sleep();
     console.log(`succesful response!!`);
     return response;
   },
@@ -59,12 +59,6 @@ const Catalog = {
   details: (id: number) => requests.get(`products/${id}`),
 };
 
-const Basket = {
-  get: () => requests.get("basket"),
-  addItem: (productId: number, quantity = 1) => requests.post(`basket?productId=${productId}&quantity=${quantity}`,{}),
-  removeItem: (productId: number, quantity = 1) => requests.del(`basket?productId=${productId}&quantity=${quantity}`)
-}
-
 const TestErrors = {
   get400Error: () => requests.get("buggy/bad-request"),
   get401Error: () => requests.get("buggy/unauthorised"),
@@ -73,10 +67,16 @@ const TestErrors = {
   getValidationError: () => requests.get("buggy/validation-error"),
 };
 
+const Basket = {
+  get: () => requests.get('basket'),
+  addItem: (productId: number, quantity = 1) => requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
+  removeItem: (productId: number, quantity = 1) => requests.del(`basket?productId=${productId}&quantity=${quantity}`)
+}
+
 const agent = {
   Catalog,
   TestErrors,
   Basket
-};
+}
 
 export default agent;
