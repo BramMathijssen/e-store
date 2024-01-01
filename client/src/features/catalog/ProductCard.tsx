@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import agent from "../../app/api/agent";
+import { useStoreContext } from "../../app/context/StoreContext";
 
 interface ProductCardProps {
     product: Product;
@@ -11,14 +12,16 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
     const [loading, setLoading] = useState<boolean>(false);
+    const {setBasket} = useStoreContext();
 
-    function handleAddItem(productId: number) {
-        setLoading(true)
-        agent.Basket.addItem(productId)
+    function handleAddItem(productId: number, quantity = 1) {
+        setLoading(true);
+        agent.Basket.addItem(productId, quantity)
+            .then(basket => setBasket(basket))
             .catch(error => console.log(error))
-            .finally(() => setLoading(false));
+            .finally(() => setLoading(false))
     }
-    
+
     return (
         <Card>
             <CardHeader
