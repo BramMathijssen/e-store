@@ -5,6 +5,8 @@ import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import agent from "../../app/api/agent";
 import { useStoreContext } from "../../app/context/StoreContext";
+import { useAppDispatch } from "../../app/store/configureStore";
+import { setBasket } from "../../app/store/basketSlice";
 
 interface ProductCardProps {
     product: Product;
@@ -12,12 +14,13 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
     const [loading, setLoading] = useState<boolean>(false);
-    const {setBasket} = useStoreContext();
+    const dispatch = useAppDispatch();
+    // const {setBasket} = useStoreContext();
 
     function handleAddItem(productId: number, quantity = 1) {
         setLoading(true);
         agent.Basket.addItem(productId, quantity)
-            .then(basket => setBasket(basket))
+            .then(basket => dispatch(setBasket(basket)))
             .catch(error => console.log(error))
             .finally(() => setLoading(false))
     }

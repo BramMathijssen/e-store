@@ -8,24 +8,43 @@ import { useStoreContext } from "../context/StoreContext";
 import agent from "../api/agent";
 import { getCookie } from "../util/util";
 import LoadingComponent from "./LoadingComponent";
+import { useAppDispatch } from "../store/configureStore";
+import { setBasket } from "../store/basketSlice";
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
     const palleteType = darkMode ? "dark" : "light";
-    const {setBasket} = useStoreContext();
     const [loading, setLoading] = useState(true);
-  
+
+    const dispatch = useAppDispatch();
+
     useEffect(() => {
       const buyerId = getCookie('buyerId');
       if (buyerId) {
         agent.Basket.get()
-          .then(basket => setBasket(basket))
+          .then(basket => dispatch(setBasket(basket)))
           .catch(error => console.log(error))
           .finally(() => setLoading(false));
       } else {
         setLoading(false);
       }
-    }, [setBasket])
+    }, [dispatch])
+    
+    
+  
+    // --------- useContext solution ---------------
+    // const {setBasket} = useStoreContext();
+    // useEffect(() => {
+    //   const buyerId = getCookie('buyerId');
+    //   if (buyerId) {
+    //     agent.Basket.get()
+    //       .then(basket => setBasket(basket))
+    //       .catch(error => console.log(error))
+    //       .finally(() => setLoading(false));
+    //   } else {
+    //     setLoading(false);
+    //   }
+    // }, [setBasket])
 
     const theme = createTheme({
         palette: {
