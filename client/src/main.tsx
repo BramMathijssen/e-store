@@ -9,7 +9,9 @@ import router from "./app/router/Routes.tsx";
 import { StoreProvider } from "./app/context/StoreContext.tsx";
 import { Provider } from "react-redux";
 import { store } from "./app/store/configureStore.ts";
+import { fetchProductsAsync } from "./app/store/catalogSlice.ts";
 
+// store.dispatch(fetchProductsAsync())
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <StoreProvider>
