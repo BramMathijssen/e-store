@@ -3,7 +3,7 @@ import { Container, CssBaseline, ThemeProvider, createTheme } from "@mui/materia
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"
+import "react-toastify/dist/ReactToastify.css";
 import { useStoreContext } from "../context/StoreContext";
 import agent from "../api/agent";
 import { getCookie } from "../util/util";
@@ -19,19 +19,17 @@ function App() {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-      const buyerId = getCookie('buyerId');
-      if (buyerId) {
-        agent.Basket.get()
-          .then(basket => dispatch(setBasket(basket)))
-          .catch(error => console.log(error))
-          .finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    }, [dispatch])
-    
-    
-  
+        const buyerId = getCookie("buyerId");
+        if (buyerId) {
+            agent.Basket.get()
+                .then((basket) => dispatch(setBasket(basket)))
+                .catch((error) => console.log(error))
+                .finally(() => setLoading(false));
+        } else {
+            setLoading(false);
+        }
+    }, [dispatch]);
+
     // --------- useContext solution ---------------
     // const {setBasket} = useStoreContext();
     // useEffect(() => {
@@ -59,11 +57,11 @@ function App() {
         setDarkMode(!darkMode);
     }
 
-    if (loading) return <LoadingComponent message="Initialising app..." />
+    if (loading) return <LoadingComponent message="Initialising app..." />;
 
     return (
         <ThemeProvider theme={theme}>
-            <ToastContainer position="bottom-right" />
+            <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
             <CssBaseline />
             <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
             <Container>

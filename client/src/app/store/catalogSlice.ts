@@ -19,26 +19,28 @@ const productsAdapter = createEntityAdapter<Product>();
 // unfinished implementation
 export const fetchProductsAsync = createAsyncThunk<Product[]>(
     'catalog/fetchProductsAsync',
-    async () => {
+    async (_, thunkAPI) => {
         try {
             return await agent.Catalog.list();
-        } catch (error) {
-            console.log(error)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({error: error.data})
         }
     }
 )
 
-// export const fetchProductAsync = createAsyncThunk<Product, number>(
-//     'catalog/fetchProductAsync',
-//     async (productId, thunkAPI) => {
-//         try {
-//             const product = await agent.Catalog.details(productId);
-//             return product;
-//         } catch (error) {
-//             return thunkAPI.rejectWithValue(error)
-//         }
-//     }
-// )
+export const fetchSingleProduct = createAsyncThunk<Product, number>(
+    'catalog/fetchSingleProduct',
+    async (productId, thunkAPI) => {
+        try {
+            const product = await agent.Catalog.details(productId);
+            return product;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({error: error.data})
+        }
+    }
+)
 
 export const catalogSlice = createSlice({
     name: 'catalog',
@@ -60,17 +62,17 @@ export const catalogSlice = createSlice({
             console.log(action.payload);
             state.status = 'idle';
         });
-        // builder.addCase(fetchProductAsync.pending, (state) => {
-        //     state.status = 'pendingFetchProduct'
-        // });
-        // builder.addCase(fetchProductAsync.fulfilled, (state, action) => {
-        //     productsAdapter.upsertOne(state, action.payload);
-        //     state.status = 'idle'
-        // });
-        // builder.addCase(fetchProductAsync.rejected, (state, action) => {
-        //     console.log(action);
-        //     state.status = 'idle'
-        // })
+        builder.addCase(fetchSingleProduct.pending, (state) => {
+            state.status = 'pendingFetchSingleProduct'
+        });
+        builder.addCase(fetchSingleProduct.fulfilled, (state, action) => {
+            productsAdapter.upsertOne(state, action.payload);
+            state.status = 'idle'
+        });
+        builder.addCase(fetchSingleProduct.rejected, (state, action) => {
+            console.log(action);
+            state.status = 'idle'
+        })
     })
 })
 

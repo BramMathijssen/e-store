@@ -35,7 +35,6 @@ export const removeBasketItemAsync = createAsyncThunk<void,
     }
 )
 
-
 export const basketSlice = createSlice({
     name: 'basket',
     initialState,

@@ -18,14 +18,19 @@ import LoadingComponent from "../../app/layout/LoadingComponent";
 import { LoadingButton } from "@mui/lab";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { addBasketItemAsync, removeBasketItemAsync } from "../../app/store/basketSlice";
+import { fetchSingleProduct, productSelectors } from "../../app/store/catalogSlice";
 
 const ProductDetails = () => {
     const dispatch = useAppDispatch();
     const { basket, status } = useAppSelector((state) => state.basket);
     const { id } = useParams<{ id: string }>();
-    const [product, setProduct] = useState<Product | null>(null);
+    // const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(0);
+    
+
+    const product = useAppSelector(state => productSelectors.selectById(state, parseInt(id!)));
+    const {status: productStatus} = useAppSelector(state => state.catalog);
     const item = basket?.items.find((i) => i.productId === product?.id);
 
     function handleUpdateCart() {
@@ -40,20 +45,25 @@ const ProductDetails = () => {
         }
     }
 
+    // useEffect(() => {
+    //     if (item) setQuantity(item.quantity);
+    //     id &&
+    //         agent.Catalog.details(parseInt(id))
+    //             .then((response) => setProduct(response))
+    //             .catch((error) => console.log(error))
+    //             .finally(() => setLoading(false));
+    // }, [id, item]);
+
     useEffect(() => {
-        if (item) setQuantity(item.quantity);
-        id &&
-            agent.Catalog.details(parseInt(id))
-                .then((response) => setProduct(response))
-                .catch((error) => console.log(error))
-                .finally(() => setLoading(false));
-    }, [id, item]);
+      if (item) setQuantity(item.quantity);
+      if (!product && id) dispatch(fetchSingleProduct(parseInt(id)))
+  }, [id, item, product, dispatch]);
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
         if (parseInt(event.currentTarget.value) >= 0) setQuantity(parseInt(event.currentTarget.value));
     }
 
-    if (loading) return <LoadingComponent message="Loading product..." />;
+    if (productStatus.includes('pending')) return <LoadingComponent message='Loading product...' />
 
     if (!product) return <NotFound />;
 

@@ -8,12 +8,12 @@ using SQLitePCL;
 namespace API.Controllers
 {
     public class BasketController : BaseApiController
-    { 
+    {
         private readonly StoreContext _context;
 
         public BasketController(StoreContext context)
         {
-             _context = context;   
+            _context = context;
         }
 
         // --- gives error: "A possible object cycle was detected. This can either be due to a cycle or if the object depth is larger than the maximum allowed depth of 32.
@@ -67,9 +67,9 @@ namespace API.Controllers
         private Basket CreateBasket()
         {
             var buyerId = Guid.NewGuid().ToString();
-            var cookieOptions = new CookieOptions{IsEssential = true, Expires = DateTime.Now.AddDays(30)};
+            var cookieOptions = new CookieOptions { IsEssential = true, Expires = DateTime.Now.AddDays(30) };
             Response.Cookies.Append("buyerId", buyerId, cookieOptions);
-            var basket = new Basket{BuyerId = buyerId};
+            var basket = new Basket { BuyerId = buyerId };
             _context.Baskets.Add(basket);
             return basket;
         }
@@ -79,9 +79,10 @@ namespace API.Controllers
         {
             var basket = await RetrieveBasket();
             if (basket == null) basket = CreateBasket();
-            
+
             var product = await _context.Products.FindAsync(productId);
-            if (product == null) return NotFound();
+
+            if (product == null) return BadRequest(new ProblemDetails { Title = "Product Not Found" });
 
             basket.AddItem(product, quantity);
 
@@ -89,7 +90,7 @@ namespace API.Controllers
 
             if (result) return CreatedAtRoute("GetBasket", MapBasketToDto(basket));
 
-            return BadRequest(new ProblemDetails{Title = "Problem saving item to basket"});
+            return BadRequest(new ProblemDetails { Title = "Problem saving item to basket" });
         }
 
         [HttpDelete]
@@ -97,15 +98,15 @@ namespace API.Controllers
         {
             var basket = await RetrieveBasket();
 
-            if(basket == null) return NotFound();
+            if (basket == null) return NotFound();
 
             basket.RemoveItem(productId, quantity);
 
             var result = await _context.SaveChangesAsync() > 0;
 
-            if(result) return Ok();
+            if (result) return Ok();
 
-            return BadRequest(new ProblemDetails{Title = "Problem deleting item from basket"});
+            return BadRequest(new ProblemDetails { Title = "Problem deleting item from basket" });
         }
 
     }

@@ -11,7 +11,7 @@ const responseBody = (response: AxiosResponse) => response.data;
 
 axios.interceptors.response.use(
   async (response) => {
-    // await sleep();
+    await sleep();
     console.log(`succesful response!!`);
     return response;
   },
