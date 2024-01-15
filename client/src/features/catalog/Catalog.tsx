@@ -3,7 +3,7 @@ import { Product } from "../../app/models/product";
 import ProductList from "./ProductList";
 import agent from "../../app/api/agent";
 import LoadingComponent from "../../app/layout/LoadingComponent";
-import { productSelectors, fetchProductsAsync } from "../../app/store/catalogSlice";
+import { productSelectors, fetchProductsAsync, fetchFilters } from "../../app/store/catalogSlice";
 import { useAppSelector, useAppDispatch } from "../../app/store/configureStore";
 
 const Catalog = () => {
@@ -21,13 +21,17 @@ const Catalog = () => {
     // }, []);
 
     const products = useAppSelector(productSelectors.selectAll);
-    const { productsLoaded, status } = useAppSelector((state) => state.catalog);
+    const { productsLoaded, status, filtersLoaded } = useAppSelector((state) => state.catalog);
     const dispatch = useAppDispatch();
 
-
+    // we use two seperate use effects here because otherwise they will run double if we combine them into one useffect
     useEffect(() => {
         if (!productsLoaded) dispatch(fetchProductsAsync());
-    }, [productsLoaded, dispatch])
+    }, [productsLoaded, dispatch]);
+
+    useEffect(() => {
+        if (!filtersLoaded) dispatch(fetchFilters());
+    }, [dispatch, filtersLoaded]);
 
     if (status.includes("pending")) return <LoadingComponent message="Loading products..." />;
 
