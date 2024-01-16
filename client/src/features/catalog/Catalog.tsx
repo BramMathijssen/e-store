@@ -8,12 +8,13 @@ import { useAppSelector, useAppDispatch } from "../../app/store/configureStore";
 import { Grid, Paper } from "@mui/material";
 import ProductSearch from "./ProductSearch";
 import RadioButtonGroup from "../../app/components/RadioButtonGroup";
+import CheckboxButtons from "../../app/components/CheckboxButtons";
 
 const sortOptions = [
-    { value: 'name', label: 'Alphabetical' },
-    { value: 'priceDesc', label: 'Price - High to low' },
-    { value: 'price', label: 'Price - Low to high' },
-]
+    { value: "name", label: "Alphabetical" },
+    { value: "priceDesc", label: "Price - High to low" },
+    { value: "price", label: "Price - Low to high" },
+];
 
 const Catalog = () => {
     // const [products, setProducts] = useState<Product[]>([]);
@@ -30,7 +31,9 @@ const Catalog = () => {
     // }, []);
 
     const products = useAppSelector(productSelectors.selectAll);
-    const { productsLoaded, status, filtersLoaded , productParams} = useAppSelector((state) => state.catalog);
+    const { productsLoaded, status, filtersLoaded, productParams, brands, types } = useAppSelector(
+        (state) => state.catalog
+    );
     const dispatch = useAppDispatch();
 
     // we use two seperate use effects here because otherwise they will run double if we combine them into one useffect
@@ -57,7 +60,6 @@ const Catalog = () => {
                         onChange={(e) => dispatch(setProductParams({ orderBy: e.target.value }))}
                     />
                 </Paper>
-                {/* 
                 <Paper sx={{ p: 2, mb: 2 }}>
                     <CheckboxButtons
                         items={brands}
@@ -69,8 +71,9 @@ const Catalog = () => {
                     <CheckboxButtons
                         items={types}
                         checked={productParams.types}
+                        onChange={(items: string[]) => dispatch(setProductParams({ types: items }))}
                     />
-                </Paper> */}
+                </Paper>
             </Grid>
             <Grid item xs={9}>
                 <ProductList products={products} />
