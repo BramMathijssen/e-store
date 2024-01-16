@@ -3,16 +3,17 @@ import { Product } from "../../app/models/product";
 import ProductList from "./ProductList";
 import agent from "../../app/api/agent";
 import LoadingComponent from "../../app/layout/LoadingComponent";
-import { productSelectors, fetchProductsAsync, fetchFilters } from "../../app/store/catalogSlice";
+import { productSelectors, fetchProductsAsync, fetchFilters, setProductParams } from "../../app/store/catalogSlice";
 import { useAppSelector, useAppDispatch } from "../../app/store/configureStore";
 import { Grid, Paper } from "@mui/material";
 import ProductSearch from "./ProductSearch";
+import RadioButtonGroup from "../../app/components/RadioButtonGroup";
 
-// const sortOptions = [
-//     { value: 'name', label: 'Alphabetical' },
-//     { value: 'priceDesc', label: 'Price - High to low' },
-//     { value: 'price', label: 'Price - Low to high' },
-// ]
+const sortOptions = [
+    { value: 'name', label: 'Alphabetical' },
+    { value: 'priceDesc', label: 'Price - High to low' },
+    { value: 'price', label: 'Price - Low to high' },
+]
 
 const Catalog = () => {
     // const [products, setProducts] = useState<Product[]>([]);
@@ -29,7 +30,7 @@ const Catalog = () => {
     // }, []);
 
     const products = useAppSelector(productSelectors.selectAll);
-    const { productsLoaded, status, filtersLoaded } = useAppSelector((state) => state.catalog);
+    const { productsLoaded, status, filtersLoaded , productParams} = useAppSelector((state) => state.catalog);
     const dispatch = useAppDispatch();
 
     // we use two seperate use effects here because otherwise they will run double if we combine them into one useffect
@@ -49,13 +50,14 @@ const Catalog = () => {
                 <Paper sx={{ mb: 2 }}>
                     <ProductSearch />
                 </Paper>
-                {/* <Paper sx={{ p: 2, mb: 2 }}>
+                <Paper sx={{ p: 2, mb: 2 }}>
                     <RadioButtonGroup
                         selectedValue={productParams.orderBy}
                         options={sortOptions}
                         onChange={(e) => dispatch(setProductParams({ orderBy: e.target.value }))}
                     />
                 </Paper>
+                {/* 
                 <Paper sx={{ p: 2, mb: 2 }}>
                     <CheckboxButtons
                         items={brands}
