@@ -52,7 +52,7 @@ const Catalog = () => {
         if (!filtersLoaded) dispatch(fetchFilters());
     }, [dispatch, filtersLoaded]);
 
-    if (status.includes("pending" || !metaData)) return <LoadingComponent message="Loading products..." />;
+    if (!filtersLoaded) return <LoadingComponent message="Loading products..." />;
 
     return (
         <Grid container columnSpacing={4}>
