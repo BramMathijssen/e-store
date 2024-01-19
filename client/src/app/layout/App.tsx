@@ -10,6 +10,8 @@ import { getCookie } from "../util/util";
 import LoadingComponent from "./LoadingComponent";
 import { useAppDispatch } from "../store/configureStore";
 import { setBasket } from "../store/basketSlice";
+import { fetchCurrentUser } from "../store/accountSlice";
+import CheckoutPage from "../../features/checkout/CheckoutPage";
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
@@ -20,6 +22,7 @@ function App() {
 
     useEffect(() => {
         const buyerId = getCookie("buyerId");
+        dispatch(fetchCurrentUser());
         if (buyerId) {
             agent.Basket.get()
                 .then((basket) => dispatch(setBasket(basket)))
