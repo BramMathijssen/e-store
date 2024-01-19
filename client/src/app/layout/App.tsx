@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Container, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
@@ -9,7 +9,7 @@ import agent from "../api/agent";
 import { getCookie } from "../util/util";
 import LoadingComponent from "./LoadingComponent";
 import { useAppDispatch } from "../store/configureStore";
-import { setBasket } from "../store/basketSlice";
+import { fetchBasketAsync, setBasket } from "../store/basketSlice";
 import { fetchCurrentUser } from "../store/accountSlice";
 import CheckoutPage from "../../features/checkout/CheckoutPage";
 
@@ -20,18 +20,18 @@ function App() {
 
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        const buyerId = getCookie("buyerId");
-        dispatch(fetchCurrentUser());
-        if (buyerId) {
-            agent.Basket.get()
-                .then((basket) => dispatch(setBasket(basket)))
-                .catch((error) => console.log(error))
-                .finally(() => setLoading(false));
-        } else {
-            setLoading(false);
+    const initApp = useCallback(async () => {
+        try {
+            await dispatch(fetchCurrentUser());
+            await dispatch(fetchBasketAsync());
+        } catch (error) {
+            console.log(error);
         }
     }, [dispatch]);
+
+    useEffect(() => {
+        initApp().then(() => setLoading(false));
+    }, [initApp]);
 
     // --------- useContext solution ---------------
     // const {setBasket} = useStoreContext();
