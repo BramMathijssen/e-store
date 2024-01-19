@@ -11,19 +11,22 @@ import CheckoutPage from "../../features/checkout/CheckoutPage";
 import ContactPage from "../../features/contact/ContactPage";
 import Register from "../../features/account/Register";
 import Login from "../../features/account/Login";
+import RequireAuth from "./RequireAuth";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
+      {element: <RequireAuth />, children: [
+        { path: "checkout", element: <CheckoutPage/> },
+      ]},
       { path: "", element: <HomePage /> },
       { path: "catalog", element: <Catalog /> },
       { path: "catalog/:id", element: <ProductDetails /> },
       { path: "about", element: <AboutPage /> },
       { path: "contact", element: <ContactPage /> },
       { path: "basket", element: <BasketPage/> },
-      { path: "checkout", element: <CheckoutPage/> },
       { path: "register", element: <Register/> },
       { path: "login", element: <Login/> },
       { path: "server-error", element: <ServerError /> },
