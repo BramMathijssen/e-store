@@ -7,7 +7,9 @@ import LoadingComponent from '../../app/layout/LoadingComponent';
 import { useAppDispatch } from '../../app/store/configureStore';
 import { setBasket } from "../../app/store/basketSlice";
 
-const stripePromise = loadStripe('x');
+const VITE_STRIPE_TEST_PK = import.meta.env.VITE_STRIPE_TEST_PK;
+
+const stripePromise = loadStripe(VITE_STRIPE_TEST_PK);
 
 export default function CheckoutWrapper() {
     const dispatch = useAppDispatch();
