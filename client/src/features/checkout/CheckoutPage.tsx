@@ -3,57 +3,73 @@ import { useEffect, useState } from "react";
 import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
 import Review from "./Review";
-import { useForm, FieldValues, FormProvider } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { validationSchema } from './checkoutValidation';
-import { useAppDispatch } from '../../app/store/configureStore';
-import agent from '../../app/api/agent';
-import { LoadingButton } from '@mui/lab';
+import { useForm, FieldValues, FormProvider } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { validationSchema } from "./checkoutValidation";
+import { useAppDispatch } from "../../app/store/configureStore";
+import agent from "../../app/api/agent";
+import { LoadingButton } from "@mui/lab";
 import { clearBasket } from "../../app/store/basketSlice";
+import { StripeElementType } from "@stripe/stripe-js";
 
-const steps = ['Shipping address', 'Review your order', 'Payment details'];
-
-function getStepContent(step: number) {
-    switch (step) {
-        case 0:
-            return <AddressForm />;
-        case 1:
-            return <Review />;
-        case 2:
-            return <PaymentForm />;
-        default:
-            throw new Error('Unknown step');
-    }
-}
+const steps = ["Shipping address", "Review your order", "Payment details"];
 
 export default function CheckoutPage() {
     const [activeStep, setActiveStep] = useState(0);
     const [orderNumber, setOrderNumber] = useState(0);
     const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch();
+    const [cardState, setCardState] = useState<{ elementError: { [key in StripeElementType]?: string } }>({
+        elementError: {},
+    });
+    const [cardComplete, setCardComplete] = useState<any>({ cardNumber: false, cardExpiry: false, cardCvc: false });
 
     const currentValidationSchema = validationSchema[activeStep];
 
+    function onCardInputChange(event: any) {
+        setCardState({
+            ...cardState,
+            elementError: {
+                ...cardState.elementError,
+                [event.elementType]: event.error?.message,
+            },
+        });
+        setCardComplete({ ...cardComplete, [event.elementType]: event.complete });
+    }
+
+    function getStepContent(step: number) {
+        switch (step) {
+            case 0:
+                return <AddressForm />;
+            case 1:
+                return <Review />;
+            case 2:
+                return <PaymentForm cardState={cardState} onCardInputChange={onCardInputChange} />;
+            default:
+                throw new Error("Unknown step");
+        }
+    }
+
     const methods = useForm({
-        mode: 'onTouched',
-        resolver: yupResolver(currentValidationSchema)
+        mode: "onTouched",
+        resolver: yupResolver(currentValidationSchema),
     });
 
     useEffect(() => {
-        agent.Account.fetchAddress()
-            .then(response => {
-                if (response) {
-                    methods.reset({...methods.getValues(), ...response, saveAddress: false})
-                }
-            })
-    }, [methods])
+        agent.Account.fetchAddress().then((response) => {
+            if (response) {
+                methods.reset({ ...methods.getValues(), ...response, saveAddress: false });
+            }
+        });
+    }, [methods]);
+    
 
     const handleNext = async (data: FieldValues) => {
-        const {nameOnCard, saveAddress, ...shippingAddress} = data;
+        const { nameOnCard, saveAddress, ...shippingAddress } = data;
         if (activeStep === steps.length - 1) {
             setLoading(true);
             try {
-                const order = await agent.Orders.create({saveAddress, shippingAddress});
+                const order = await agent.Orders.create({ saveAddress, shippingAddress });
                 setOrderNumber(order);
                 setActiveStep(activeStep + 1);
                 dispatch(clearBasket());
@@ -70,6 +86,19 @@ export default function CheckoutPage() {
     const handleBack = () => {
         setActiveStep(activeStep - 1);
     };
+
+    function submitDisabled(): boolean {
+        if (activeStep === steps.length - 1) {
+            return (
+                !cardComplete.cardCvc ||
+                !cardComplete.cardExpiry ||
+                !cardComplete.cardNumber ||
+                !methods.formState.isValid
+            );
+        } else {
+            return !methods.formState.isValid;
+        }
+    }
 
     return (
         <FormProvider {...methods}>
@@ -91,15 +120,14 @@ export default function CheckoutPage() {
                                 Thank you for your order.
                             </Typography>
                             <Typography variant="subtitle1">
-                                Your order number is #{orderNumber}. We have not emailed your order
-                                confirmation, and will not send you an update when your order has
-                                shipped as this is a fake store!
+                                Your order number is #{orderNumber}. We have not emailed your order confirmation, and
+                                will not send you an update when your order has shipped as this is a fake store!
                             </Typography>
                         </>
                     ) : (
                         <form onSubmit={methods.handleSubmit(handleNext)}>
                             {getStepContent(activeStep)}
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 {activeStep !== 0 && (
                                     <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
                                         Back
@@ -107,12 +135,13 @@ export default function CheckoutPage() {
                                 )}
                                 <LoadingButton
                                     loading={loading}
-                                    disabled={!methods.formState.isValid}
-                                    type='submit'
+                                    // disabled={!methods.formState.isValid}
+                                    disabled={submitDisabled()}
+                                    type="submit"
                                     variant="contained"
                                     sx={{ mt: 3, ml: 1 }}
                                 >
-                                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                                    {activeStep === steps.length - 1 ? "Place order" : "Next"}
                                 </LoadingButton>
                             </Box>
                         </form>
