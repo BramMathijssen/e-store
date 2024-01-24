@@ -1,10 +1,3 @@
-// import { createStore } from "redux";
-// import counterReducer from "../../features/contact/counterReducer";
-
-// export function configureStore() {
-//     return createStore(counterReducer)
-// }
-
 import { configureStore } from '@reduxjs/toolkit';
 import { counterSlice } from '../../features/contact/counterSlice';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';

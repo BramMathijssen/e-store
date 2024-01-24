@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
-import { Product } from "../../app/models/product";
+import { useEffect } from "react";
 import ProductList from "./ProductList";
-import agent from "../../app/api/agent";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import {
     productSelectors,
@@ -24,21 +22,8 @@ const sortOptions = [
 ];
 
 const Catalog = () => {
-    // const [products, setProducts] = useState<Product[]>([]);
-    // const [loading, setLoading] = useState(true);
-
-    // useEffect(() => {
-    //   const fetchProducts = async () => {
-    //     agent.Catalog.list()
-    //       .then((response) => setProducts(response))
-    //       .catch((error) => console.log(error))
-    //       .finally(() => setLoading(false));
-    //   };
-    //   fetchProducts();
-    // }, []);
-
     const products = useAppSelector(productSelectors.selectAll);
-    const { productsLoaded, status, filtersLoaded, productParams, brands, types, metaData } = useAppSelector(
+    const { productsLoaded, filtersLoaded, productParams, brands, types, metaData } = useAppSelector(
         (state) => state.catalog
     );
     const dispatch = useAppDispatch();

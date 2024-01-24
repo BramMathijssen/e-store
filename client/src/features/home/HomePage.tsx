@@ -1,9 +1,10 @@
-import React from 'react'
+import { Box, Typography } from "@mui/material";
+import Slider from "react-slick";
 
-const HomePage = () => {
-  return (
-    <div>HomePage</div>
-  )
+export default function HomePage() {
+    return (
+        <Box display="flex" justifyContent="center" sx={{ p: 4 }}>
+            <Typography variant="h1">Welcome to the store</Typography>
+        </Box>
+    );
 }
-
-export default HomePage

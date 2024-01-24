@@ -7,7 +7,6 @@ import ProductDetails from "../../features/catalog/ProductDetails";
 import ServerError from "../errors/ServerError";
 import NotFound from "../errors/NotFound";
 import BasketPage from "../../features/basket/BasketPage";
-import CheckoutPage from "../../features/checkout/CheckoutPage";
 import ContactPage from "../../features/contact/ContactPage";
 import Register from "../../features/account/Register";
 import Login from "../../features/account/Login";

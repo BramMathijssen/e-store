@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import AppTextInput from "../../app/components/AppTextInput";
-import { Typography, Grid, TextField, FormControlLabel, Checkbox } from "@mui/material";
+import { Typography, Grid, TextField} from "@mui/material";
 import { CardCvcElement, CardExpiryElement, CardNumberElement } from "@stripe/react-stripe-js";
 import { StripeInput } from "./StripeInput";
 import { StripeElementType } from "@stripe/stripe-js";
@@ -23,7 +23,6 @@ export default function PaymentForm({ cardState, onCardInputChange }: PaymentFor
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <TextField
-                        // required
                         onChange={onCardInputChange}
                         error={!!cardState.elementError.cardNumber}
                         helperText={cardState.elementError.cardNumber}

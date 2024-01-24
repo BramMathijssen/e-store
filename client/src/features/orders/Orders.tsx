@@ -1,6 +1,5 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button } from "@mui/material";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import agent from "../../app/api/agent";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { Order } from "../../app/models/order";

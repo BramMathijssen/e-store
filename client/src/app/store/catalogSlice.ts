@@ -28,7 +28,6 @@ function getAxiosParams(productParams: ProductParams) {
     return params;
 }
 
-// unfinished implementation
 export const fetchProductsAsync = createAsyncThunk<Product[], void, { state: RootState }>(
     "catalog/fetchProductsAsync",
     async (_, thunkAPI) => {

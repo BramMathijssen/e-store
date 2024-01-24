@@ -5,12 +5,9 @@ import { useAppDispatch, useAppSelector } from '../../app/store/configureStore';
 const ContactPage = () => {
     const dispatch = useAppDispatch();
     const {data, title} = useAppSelector(state => state.counter);
-    // const data = useSelector((state: CounterState) => state.data);
-    // const title = useSelector((state: CounterState) => state.title);
-    
+
     return (
         <>
-        <div>Yooooo</div>
             <Typography gutterBottom variant='h3'>{title}</Typography>
             <Typography variant='h4'>The data is: {data}</Typography>
             <ButtonGroup>

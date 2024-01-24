@@ -22,12 +22,8 @@ axios.interceptors.response.use(
     async (response) => {
         await sleep();
         const pagination = response.headers["pagination"];
-        console.log(`---res before---`);
-        console.log(response);
         if (pagination) {
             response.data = new PaginatedResponse(response.data, JSON.parse(pagination));
-            console.log(`--- res after---`);
-            console.log(response);
             return response;
         }
         return response;
@@ -38,13 +34,11 @@ axios.interceptors.response.use(
             case 400:
                 if (data.errors) {
                     const modelStateErrors: string[] = [];
-                    console.log(data.errors);
                     for (const key in data.errors) {
                         if (data.errors[key]) {
                             modelStateErrors.push(data.errors[key]);
                         }
                     }
-                    console.log(modelStateErrors.flat());
                     throw modelStateErrors.flat();
                 }
                 toast.error(data.title);
@@ -59,7 +53,6 @@ axios.interceptors.response.use(
             default:
                 break;
         }
-        console.log("caught by interceptor");
         return Promise.reject(error.response);
     }
 );
@@ -108,7 +101,6 @@ const Orders = {
 const Payments = {
     createPaymentIntent: () => requests.post('payments', {})
 }
-
 
 const agent = {
     Catalog,
