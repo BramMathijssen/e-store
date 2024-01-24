@@ -6,21 +6,21 @@ import { store } from "../store/configureStore";
 
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
 
-axios.defaults.baseURL = "http://localhost:5245/api/";
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.withCredentials = true;
 
 const responseBody = (response: AxiosResponse) => response.data;
 
-axios.interceptors.request.use(config => {
-    const token= store.getState().account.user?.token;
+axios.interceptors.request.use((config) => {
+    const token = store.getState().account.user?.token;
     if (token) config.headers.Authorization = `Bearer ${token}`;
 
     return config;
-})
+});
 
 axios.interceptors.response.use(
     async (response) => {
-        await sleep();
+        if (import.meta.env.DEV) await sleep();
         const pagination = response.headers["pagination"];
         if (pagination) {
             response.data = new PaginatedResponse(response.data, JSON.parse(pagination));
@@ -71,11 +71,11 @@ const Catalog = {
 };
 
 const Account = {
-  login: (values: any) => requests.post('account/login', values),
-  register: (values: any) => requests.post('account/register', values),
-  currentUser: () => requests.get('account/currentUser'),
-  fetchAddress: () => requests.get('account/savedAddress')
-}
+    login: (values: any) => requests.post("account/login", values),
+    register: (values: any) => requests.post("account/register", values),
+    currentUser: () => requests.get("account/currentUser"),
+    fetchAddress: () => requests.get("account/savedAddress"),
+};
 
 const TestErrors = {
     get400Error: () => requests.get("buggy/bad-request"),
@@ -93,14 +93,14 @@ const Basket = {
 };
 
 const Orders = {
-    list: () => requests.get('orders'),
+    list: () => requests.get("orders"),
     fetch: (id: number) => requests.get(`orders/${id}`),
-    create: (values: any) => requests.post('orders', values)
-}
+    create: (values: any) => requests.post("orders", values),
+};
 
 const Payments = {
-    createPaymentIntent: () => requests.post('payments', {})
-}
+    createPaymentIntent: () => requests.post("payments", {}),
+};
 
 const agent = {
     Catalog,
@@ -108,7 +108,7 @@ const agent = {
     Basket,
     Account,
     Orders,
-    Payments
+    Payments,
 };
 
 export default agent;

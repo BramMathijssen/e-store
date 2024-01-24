@@ -479,3 +479,5 @@ API/appsettings.json
 API/appsettings.Development.json
 
 .env
+.env.development
+.env.production
