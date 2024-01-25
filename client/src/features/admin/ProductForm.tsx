@@ -5,6 +5,8 @@ import { Product } from '../../app/models/product';
 import { useEffect } from 'react';
 
 import { LoadingButton } from '@mui/lab';
+import AppSelectList from '../../app/components/AppSelectList';
+import useProducts from '../../app/hooks/useProducts';
 
 interface Props {
     product?: Product;
@@ -13,6 +15,7 @@ interface Props {
 
 export default function ProductForm({ product, cancelEdit }: Props) {
     const { control, reset} = useForm();
+    const { brands, types } = useProducts();
 
     useEffect(() => {
         if (product) reset(product);
@@ -29,10 +32,10 @@ export default function ProductForm({ product, cancelEdit }: Props) {
                         <AppTextInput control={control} name='name' label='Product name' />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <AppTextInput control={control} name='brand' label='Brand' />
+                        <AppSelectList items={brands} control={control} name='brand' label='Brand' />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <AppTextInput control={control} name='type' label='Type' />
+                        <AppSelectList items={types} control={control} name='type' label='Type' />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <AppTextInput control={control} name='price' label='Price' />
