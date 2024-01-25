@@ -3,11 +3,12 @@ import { FieldValues, useForm } from "react-hook-form";
 import AppTextInput from "../../app/components/AppTextInput";
 import { Product } from "../../app/models/product";
 import { useEffect } from "react";
-
 import { LoadingButton } from "@mui/lab";
 import AppSelectList from "../../app/components/AppSelectList";
 import useProducts from "../../app/hooks/useProducts";
 import AppDropzone from "../../app/components/AppDropzone";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { validationSchema } from "./productValidation";
 
 interface Props {
     product?: Product;
@@ -15,7 +16,10 @@ interface Props {
 }
 
 export default function ProductForm({ product, cancelEdit }: Props) {
-    const { control, reset, handleSubmit, watch } = useForm();
+    const { control, reset, handleSubmit, watch, } = useForm({
+        mode: 'onTouched',
+        resolver: yupResolver<any>(validationSchema)
+    });
     const { brands, types } = useProducts();
     const watchFile = watch("file", null);
 
