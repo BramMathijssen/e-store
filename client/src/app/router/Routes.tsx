@@ -13,6 +13,7 @@ import Login from "../../features/account/Login";
 import RequireAuth from "./RequireAuth";
 import Orders from "../../features/orders/Orders";
 import CheckoutWrapper from "../../features/checkout/CheckoutWrapper";
+import Inventory from "../../features/admin/Inventory";
 
 const router = createBrowserRouter([
     {
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
                 children: [
                     { path: "checkout", element: <CheckoutWrapper /> },
                     { path: "orders", element: <Orders /> },
+                    { path: "inventory", element: <Inventory /> },
                 ],
             },
             { path: "", element: <HomePage /> },
