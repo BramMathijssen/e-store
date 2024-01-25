@@ -1,10 +1,6 @@
-import { useEffect } from "react";
 import ProductList from "./ProductList";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import {
-    productSelectors,
-    fetchProductsAsync,
-    fetchFilters,
     setProductParams,
     setPageNumber,
 } from "../../app/store/catalogSlice";
