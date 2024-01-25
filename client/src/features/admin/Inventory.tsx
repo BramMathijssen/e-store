@@ -5,15 +5,19 @@ import useProducts from '../../app/hooks/useProducts';
 import AppPagination from '../../app/components/AppPagination';
 import { useAppDispatch } from '../../app/store/configureStore';
 import { useState } from 'react';
-import { Product } from '../../app/models/product';
-import { setPageNumber } from '../../app/store/catalogSlice';
 import ProductForm from './ProductForm';
+import { Product } from '../../app/models/product';
+import agent from '../../app/api/agent';
+import { LoadingButton } from '@mui/lab';
+import { removeProduct, setPageNumber } from '../../app/store/catalogSlice';
 
 export default function Inventory() {
     const { products, metaData } = useProducts();
-    const dispatch = useAppDispatch();
     const [editMode, setEditMode] = useState(false);
+    const dispatch = useAppDispatch();
     const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
+    const [loading, setLoading] = useState(false);
+    const [target, setTarget] = useState(0);
 
     function handleSelectProduct(product: Product) {
         setSelectedProduct(product);
@@ -23,6 +27,15 @@ export default function Inventory() {
     function cancelEdit() {
         if (selectedProduct) setSelectedProduct(undefined);
         setEditMode(false);
+    }
+
+    function handleDeleteProduct(id: number) {
+        setLoading(true);
+        setTarget(id)
+        agent.Admin.deleteProduct(id)
+            .then(() => dispatch(removeProduct(id)))
+            .catch(error => console.log(error))
+            .finally(() => setLoading(false))
     }
 
     if (editMode) return <ProductForm cancelEdit={cancelEdit} product={selectedProduct} />
@@ -76,11 +89,11 @@ export default function Inventory() {
                                         startIcon={<Edit />}
                                         onClick={() => handleSelectProduct(product)}
                                     />
-                                    {/* <LoadingButton
+                                    <LoadingButton
                                         loading={loading && target === product.id}
                                         startIcon={<Delete />} color='error'
                                         onClick={() => handleDeleteProduct(product.id)}
-                                    /> */}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))}

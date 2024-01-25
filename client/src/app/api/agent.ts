@@ -58,11 +58,17 @@ axios.interceptors.response.use(
 );
 
 const requests = {
-    get: (url: string, params?: URLSearchParams) => axios.get(url, { params: params }).then(responseBody),
+    get: (url: string, params?: URLSearchParams) => axios.get(url, {params}).then(responseBody),
     post: (url: string, body: object) => axios.post(url, body).then(responseBody),
     put: (url: string, body: object) => axios.put(url, body).then(responseBody),
     del: (url: string) => axios.delete(url).then(responseBody),
-};
+    postForm: (url: string, data: FormData) => axios.post(url, data, {
+        headers: {'Content-type': 'multipart/form-data'}
+    }).then(responseBody),
+    putForm: (url: string, data: FormData) => axios.put(url, data, {
+        headers: {'Content-type': 'multipart/form-data'}
+    }).then(responseBody)
+}
 
 const Catalog = {
     list: (params: URLSearchParams) => requests.get("products", params),
@@ -102,6 +108,20 @@ const Payments = {
     createPaymentIntent: () => requests.post("payments", {}),
 };
 
+function createFormData(item: any) {
+    const formData = new FormData();
+    for (const key in item) {
+        formData.append(key, item[key])
+    }
+    return formData;
+}
+
+const Admin = {
+    createProduct: (product: any) => requests.postForm('products', createFormData(product)),
+    updateProduct: (product: any) => requests.putForm('products', createFormData(product)),
+    deleteProduct: (id: number) => requests.del(`products/${id}`)
+}
+
 const agent = {
     Catalog,
     TestErrors,
@@ -109,6 +129,7 @@ const agent = {
     Account,
     Orders,
     Payments,
+    Admin
 };
 
 export default agent;
