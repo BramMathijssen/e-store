@@ -1,10 +1,6 @@
-import { useEffect } from "react";
 import ProductList from "./ProductList";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import {
-    productSelectors,
-    fetchProductsAsync,
-    fetchFilters,
     setProductParams,
     setPageNumber,
 } from "../../app/store/catalogSlice";
@@ -14,6 +10,7 @@ import ProductSearch from "./ProductSearch";
 import RadioButtonGroup from "../../app/components/RadioButtonGroup";
 import CheckboxButtons from "../../app/components/CheckboxButtons";
 import AppPagination from "../../app/components/AppPagination";
+import useProducts from "../../app/hooks/useProducts";
 
 const sortOptions = [
     { value: "name", label: "Alphabetical" },
@@ -22,20 +19,9 @@ const sortOptions = [
 ];
 
 const Catalog = () => {
-    const products = useAppSelector(productSelectors.selectAll);
-    const { productsLoaded, filtersLoaded, productParams, brands, types, metaData } = useAppSelector(
-        (state) => state.catalog
-    );
+    const { products, brands, types, filtersLoaded, metaData } = useProducts();
+    const { productParams } = useAppSelector((state) => state.catalog);
     const dispatch = useAppDispatch();
-
-    // we use two seperate use effects here because otherwise they will run double if we combine them into one useffect
-    useEffect(() => {
-        if (!productsLoaded) dispatch(fetchProductsAsync());
-    }, [productsLoaded, dispatch]);
-
-    useEffect(() => {
-        if (!filtersLoaded) dispatch(fetchFilters());
-    }, [dispatch, filtersLoaded]);
 
     if (!filtersLoaded) return <LoadingComponent message="Loading products..." />;
 
