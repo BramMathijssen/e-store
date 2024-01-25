@@ -7,14 +7,13 @@ import { useAppDispatch } from '../../app/store/configureStore';
 import { useState } from 'react';
 import { Product } from '../../app/models/product';
 import { setPageNumber } from '../../app/store/catalogSlice';
+import ProductForm from './ProductForm';
 
 export default function Inventory() {
     const { products, metaData } = useProducts();
-    const [editMode, setEditMode] = useState(false);
     const dispatch = useAppDispatch();
+    const [editMode, setEditMode] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
-    const [loading, setLoading] = useState(false);
-    const [target, setTarget] = useState(0);
 
     function handleSelectProduct(product: Product) {
         setSelectedProduct(product);
@@ -26,15 +25,7 @@ export default function Inventory() {
         setEditMode(false);
     }
 
-    // function handleDeleteProduct(id: number) {
-    //     setLoading(true);
-    //     setTarget(id)
-    //     agent.Admin.deleteProduct(id)
-    //         .then(() => dispatch(removeProduct(id)))
-    //         .catch(error => console.log(error))
-    //         .finally(() => setLoading(false))
-    // }
-
+    if (editMode) return <ProductForm cancelEdit={cancelEdit} product={selectedProduct} />
 
     return (
         <>
